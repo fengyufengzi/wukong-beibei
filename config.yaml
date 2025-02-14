@@ -1,0 +1,135 @@
+http_service:
+  host: 0.0.0.0
+  port: 23456
+  debug: false
+  origins: '*'
+ngrok_config:
+  auth_token: null
+resource_paths_config:
+  chinese_roberta_wwm_ext_large: bert/chinese-roberta-wwm-ext-large
+  bert_base_japanese_v3: bert/bert-base-japanese-v3
+  bert_large_japanese_v2: bert/bert-large-japanese-v2
+  deberta_v2_large_japanese: bert/deberta-v2-large-japanese
+  deberta_v3_large: bert/deberta-v3-large
+  deberta_v2_large_japanese_char_wwm: bert/deberta-v2-large-japanese-char-wwm
+  wav2vec2_large_robust_12_ft_emotion_msp_dim: emotional/wav2vec2-large-robust-12-ft-emotion-msp-dim
+  clap_htsat_fused: emotional/clap-htsat-fused
+  erlangshen_MegatronBert_1_3B_Chinese: bert/Erlangshen-MegatronBert-1.3B-Chinese
+  vits_chinese_bert: bert/vits_chinese_bert
+  hubert_soft_0d54a1f4: hubert/hubert_soft/hubert-soft-0d54a1f4.pt
+  dimensional_emotion_npy: emotional/dimensional_emotion_npy
+  dimensional_emotion_model: emotional/dimensional_emotion_model/models.yaml
+  g2pw_model: G2PWModel
+  chinese_hubert_base: hubert/chinese_hubert_base
+tts_model_config:
+  models_dir: models
+  auto_load: true
+  tts_models: []
+admin:
+  id: 0
+  username: 8kxZF2z4
+  password: AmpArwpceclXxjYZ
+system:
+  device: cpu
+  upload_folder: upload
+  cache_path: cache
+  clean_interval_seconds: 3600
+  cache_audio: false
+  api_key_enabled: false
+  api_keys:
+  - key: dvwLqz10Xv5LuzIUqRfDGAMu
+    enabled: true
+  - key: MUwXXoYIEWcBxvKbKeaOxkc5
+    enabled: true
+  - key: i7FBDNfZfdW70K5TnCTHekaU
+    enabled: true
+  - key: zwLxXNLWqhyCuMMjezMyc6bo
+    enabled: true
+  - key: XHpNdw4s317UcHnwxoi1BLIH
+    enabled: true
+  is_admin_enabled: true
+  admin_route: /admin
+  data_path: data
+log_config:
+  logs_path: logs
+  logs_backup_count: 30
+  logging_level: DEBUG
+language_identification:
+  language_identification_library: langid
+  espeak_library: C:/Program Files/eSpeak NG/libespeak-ng.dll
+  language_automatic_detect: []
+  split_pattern: '[\!\"\#\$\%\&\''\(\)\*\+\,\-\.\/\:\;\<\>\=\?\@\[\]\{\}\\\\\^\_\`\！？。＂＃＄％＆＇（）＊＋，－／：；＜＝＞＠［＼］＾＿｀｛｜｝～｟｠｢｣､、〃》「」『』【】〔〕〖〗〘〙〚〛〜〝〞〟〰〾〿–—‘\''\‛\“\”\„\‟…‧﹏.]+'
+polyphonic:
+  dict_path: polyphonic.yaml
+reading_config:
+  interlocutor:
+    model_type: VITS
+    id: 0
+    preset: default
+  narrator:
+    model_type: VITS
+    id: 0
+    preset: default
+vits_config:
+  id: 0
+  format: wav
+  lang: auto
+  length: 1.0
+  noise: 0.33
+  noisew: 0.4
+  segment_size: 50
+  use_streaming: false
+w2v2_vits_config:
+  id: 0
+  format: wav
+  lang: auto
+  length: 1.0
+  noise: 0.33
+  noisew: 0.4
+  segment_size: 50
+  emotion: 0
+hubert_vits_config:
+  id: 0
+  format: wav
+  length: 1.0
+  noise: 0.33
+  noisew: 0.4
+bert_vits2_config:
+  id: 0
+  speaker: null
+  format: wav
+  lang: auto
+  length: 1.0
+  noise: 0.33
+  noisew: 0.4
+  segment_size: 50
+  sdp_ratio: 0.2
+  emotion: 0
+  text_prompt: Happy
+  style_text: null
+  style_weight: 0.7
+  use_streaming: false
+  torch_data_type: null
+gpt_sovits_config:
+  hz: 50
+  is_half: false
+  id: 0
+  lang: auto
+  format: wav
+  segment_size: 30
+  top_k: 5
+  top_p: 1.0
+  temperature: 1.0
+  use_streaming: false
+  batch_size: 5
+  speed: 1.0
+  seed: -1
+  presets:
+    default:
+      refer_wav_path: refWav.wav
+      prompt_text: 今天要吃什么呀
+      prompt_lang: zh
+    default2:
+      refer_wav_path: null
+      prompt_text: null
+      prompt_lang: auto

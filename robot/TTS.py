@@ -61,12 +61,12 @@ class HanTTS(AbstractTTS):
         "。",
         "？",
         "！",
-        "“",
-        "”",
+        """,
+        """,
         "；",
         "：",
-        "（",
-        "）",
+        "(",
+        ")",
         ":",
         ";",
         ",",
@@ -425,10 +425,10 @@ class VITS(AbstractTTS):
 
     SLUG = "VITS"
 
-    def __init__(self, server_url, api_key, speaker_id, length, noise, noisew, max, timeout, **args):
+    def __init__(self, server_url, api_key, speaker_id, length, noise, noisew, max, timeout,prompt_text, **args):
         super(self.__class__, self).__init__()
-        self.server_url, self.api_key, self.speaker_id, self.length, self.noise, self.noisew, self.max, self.timeout = (
-            server_url, api_key, speaker_id, length, noise, noisew, max, timeout)
+        self.server_url, self.api_key, self.speaker_id, self.length, self.noise, self.noisew, self.max, self.timeout,self.prompt_text = (
+            server_url, api_key, speaker_id, length, noise, noisew, max, timeout,prompt_text)
 
     @classmethod
     def get_config(cls):
@@ -436,10 +436,13 @@ class VITS(AbstractTTS):
 
     def get_speech(self, phrase):
         result = VITSClient.tts(phrase, self.server_url, self.api_key, self.speaker_id, self.length, self.noise,
-                                self.noisew, self.max, self.timeout)
-        tmpfile = utils.write_temp_file(result, ".wav")
-        logger.info(f"{self.SLUG} 语音合成成功，合成路径：{tmpfile}")
-        return tmpfile
+                               self.noisew, self.max, self.timeout)
+        if result is not None:
+            tmpfile = utils.write_temp_file(result, '.wav')
+            logger.info(f'{self.SLUG} 语音合成成功，合成路径：{tmpfile}')
+            return tmpfile
+        else:
+            logger.critical(f'{self.SLUG} 合成失败！', stack_info=True)
 
 def get_engine_by_slug(slug=None):
     """

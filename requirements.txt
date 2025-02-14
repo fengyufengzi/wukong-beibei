@@ -21,3 +21,9 @@ asyncio
 edge-tts
 nest_asyncio
 funasr_onnx
+websockets
+pypinyin
+edge_tts
+nest_asyncio
+pvporcupine
+pvrecorder

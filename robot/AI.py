@@ -8,6 +8,7 @@ from uuid import getnode as get_mac
 from abc import ABCMeta, abstractmethod
 from robot import logging, config, utils
 from robot.sdk import unit
+from openai import OpenAI
 
 logger = logging.getLogger(__name__)
 
@@ -415,6 +416,142 @@ class OPENAIRobot(AbstractRobot):
                 "openai robot failed to response for %r", msg, exc_info=True
             )
             return "抱歉，OpenAI 回答失败"
+
+
+class DeepSeekRobot(AbstractRobot):
+
+    SLUG = "deepseek"
+
+    def __init__(
+        self,
+        deepseek_api_key,
+        api_base,
+        model,
+        prefix="",
+        proxy="",        
+    ):
+        """
+        DeepSeek机器人
+        """
+        super(self.__class__, self).__init__()
+        self.openai = None
+        try:
+            import openai
+
+            self.openai = openai
+            if not openai_api_key:
+                openai_api_key = os.getenv("OPENAI_API_KEY")
+            self.openai.api_key = openai_api_key
+            if proxy:
+                logger.info(f"{self.SLUG} 使用代理：{proxy}")
+                self.openai.proxy = proxy
+            else:
+                self.openai.proxy = None
+
+        except Exception:
+            logger.critical("deepseek 初始化失败，请升级 Python 版本至 > 3.6")
+        self.model = model
+        self.prefix = prefix
+        # self.provider = provider
+        # self.api_version = api_version
+        # self.temperature = temperature
+        # self.max_tokens = max_tokens
+        # self.top_p = top_p
+        # self.frequency_penalty = frequency_penalty
+        # self.presence_penalty = presence_penalty
+        # self.stop_ai = stop_ai
+        self.api_base = api_base if api_base else "https://api.deepseek.com"
+        self.context = []
+        self.deepseek_api_key = deepseek_api_key
+
+    @classmethod
+    def get_config(cls):
+        # Try to get anyq config from config
+        return config.get("deepseek", {})
+
+    def stream_chat(self, texts):
+        """
+        deepseek API获取回复
+        :return: 回复
+        """
+        msg = "".join(texts)
+        msg = utils.stripPunctuation(msg)
+        msg = self.prefix + msg  # 增加一段前缀
+        logger.info("msg: " + msg)
+        self.context.append({"role": "system", "content": "You are a helpful assistant"})
+        self.context.append({"role": "user", "content": msg})
+
+        header = {
+            "Content-Type": "application/json",
+            # "Authorization": "Bearer " + self.openai.api_key
+        }
+        logger.info(f"使用模型：{self.model}，开始流式请求")       
+        # 请求接收流式数据
+        try:
+            client =  OpenAI(api_key=self.deepseek_api_key, base_url=self.api_base)
+            response = client.chat.completions.create(
+                mode=self.model,
+                messages=self.context,
+                stream=False,
+                #proxies={"https": self.openai.proxy},
+            )
+
+            def generate():
+                stream_content = str()
+                one_message = {"role": "assistant", "content": stream_content}
+                self.context.append(one_message)
+                logger.info("deepseek_msg: " + response.choices[0].message.content)
+                one_message["content"]=(
+                    one_message["content"]+response.choices[0].message.content
+                    )
+                yield response.choices[0].message.content                
+
+        except Exception as e:
+            ee = e
+            def generate():
+                yield "request error:\n" + str(ee)
+
+        return generate
+
+    def chat(self, texts, parsed):
+        """
+        使用deepseek机器人聊天
+
+        Arguments:
+        texts -- user input, typically speech, to be parsed by a module
+        """
+        msg = "".join(texts)
+        msg = utils.stripPunctuation(msg)
+        msg = self.prefix + msg  # 增加一段前缀
+        logger.info("deepseek msg: " + msg)
+        logger.info("deepseek_api_key: " + self.deepseek_api_key)
+        logger.info("deepseek_api_base: " + self.api_base)
+        try:
+            respond = ""
+            self.context.append({"role": "user", "content": msg})            
+            client =  OpenAI(api_key=self.deepseek_api_key, base_url=self.api_base)
+            #client = OpenAI(api_key="sk-36720afb25fd4852a1ed71b63fb8303c", base_url="https://api.deepseek.com")
+            response = client.chat.completions.create(
+                model=self.model,
+                messages=self.context,                    
+                stream=False,
+            )            
+            message = response.choices[0].message
+            respond = message.content
+            self.context.append(message)
+            return respond        
+        except Exception as e:
+            ee = e 
+            logger.critical(
+                "deepseek robot failed to response for %r", msg, exc_info=True
+            )
+            logger.critical(
+                "deepseek robot failed error: %r", str(ee), exc_info=True
+            )
+            return "DeepSeek 回答失败"
+
+
+
 
 class WenxinRobot(AbstractRobot):
     
