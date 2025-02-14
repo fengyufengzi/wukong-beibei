@@ -429,6 +429,7 @@ class DeepSeekRobot(AbstractRobot):
         model,
         prefix="",
         proxy="",        
+        system_prompt="",
     ):
         """
         DeepSeek机器人
@@ -452,6 +453,7 @@ class DeepSeekRobot(AbstractRobot):
             logger.critical("deepseek 初始化失败，请升级 Python 版本至 > 3.6")
         self.model = model
         self.prefix = prefix
+        self.system_prompt = system_prompt
         # self.provider = provider
         # self.api_version = api_version
         # self.temperature = temperature
@@ -478,7 +480,7 @@ class DeepSeekRobot(AbstractRobot):
         msg = utils.stripPunctuation(msg)
         msg = self.prefix + msg  # 增加一段前缀
         logger.info("msg: " + msg)
-        self.context.append({"role": "system", "content": "You are a helpful assistant"})
+        self.context.append({"role": "system", "content": self.system_prompt})
         self.context.append({"role": "user", "content": msg})
 
         header = {
@@ -528,6 +530,7 @@ class DeepSeekRobot(AbstractRobot):
         logger.info("deepseek_api_base: " + self.api_base)
         try:
             respond = ""
+            self.context.append({"role": "system", "content": self.system_prompt})
             self.context.append({"role": "user", "content": msg})            
             client =  OpenAI(api_key=self.deepseek_api_key, base_url=self.api_base)
             #client = OpenAI(api_key="sk-36720afb25fd4852a1ed71b63fb8303c", base_url="https://api.deepseek.com")

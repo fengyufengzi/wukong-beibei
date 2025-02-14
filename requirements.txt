@@ -10,7 +10,8 @@ tornado==6.3.3
 markdown==3.0.1
 semver==2.8.1
 websocket==0.2.1
-websocket-client
+websocket-client==1.8.0
+websockets==8.1
 pypinyin
 jieba
 pvporcupine
