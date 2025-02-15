@@ -94,12 +94,16 @@ def initDetector(wukong):
         logger.info("使用 snowboy 进行离线唤醒")
         detector and detector.terminate()
         models = constants.getHotwordModel(config.get("hotword", "wukong.pmdl"))
+        print("---model name: ----", (config.get("hotword", "wukong.pmdl")))
+        logger.info("model name: %s", str(config.get("hotword", "wukong.pmdl")))
         detector = snowboydecoder.HotwordDetector(
-            models, sensitivity=config.get("sensitivity", 0.5)
+            models, sensitivity=config.get("sensitivity", 0.9)
         )
         # main loop
         try:
             callbacks = wukong._detected_callback
+            print("---callbacks: ----", callbacks)
+            logger.info("callbacks: %s", str(callbacks))
             detector.start(
                 detected_callback=callbacks,
                 audio_recorder_callback=wukong.conversation.converse,
