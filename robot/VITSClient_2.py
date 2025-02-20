@@ -6,18 +6,20 @@
 import requests
 
 
-def tts(text, server_url, api_key, prompt_text, timeout):
+def tts(text, server_url, api_key, speaker_id, length, noise, noisew, max, timeout):
     data = {
-        "id" : 0,
-        "text": text,        
-        "prompt_lang":"auto",
+        "text": text,
+        "id": speaker_id,
+        "format": "wav",
         "lang": "auto",
-        "prompt_text":prompt_text,
-        "preset":"default"
+        "length": length,
+        "noise": noise,
+        "noisew": noisew,
+        "max": max
     }
     headers = {"X-API-KEY": api_key}
-    url = f"{server_url}/voice/gpt-sovits?id=0&prompt_lang=auto&prompt_text={prompt_text}preset=default&text={text}"
-    res = requests.get(url=url, data=data, headers=headers, timeout=timeout)
+    url = f"{server_url}/voice"
+    res = requests.post(url=url, data=data, headers=headers, timeout=timeout)
     res.raise_for_status()
     return res.content
 
